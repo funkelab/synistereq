@@ -6,12 +6,32 @@ import json
 import random
 from synister.synister_db import SynisterDb
 
-class Catmaid(object):
-    def __init__(self, credentials=os.path.join(os.path.abspath(os.path.dirname(__file__)), "../catmaid_credentials.ini")):
-        self.credentials = credentials
+from service_interface import ServiceInterface
+
+class Catmaid(ServiceInterface):
+    def __init__(self, 
+                 credentials=os.path.join(os.path.abspath(os.path.dirname(__file__)), 
+                                                          "../catmaid_credentials.ini")):
+        dataset = "FAFB"
+        super().__init__(dataset, credentials)
+        pymaid.clear_cache()
         self.instance = self.__get_instance(self.credentials)
         self.volumes = self.__get_volumes()
+
+    def __transform_position(self, position):
+        z = position[0]
+        y = position[1]
+        x = position[2]
+        return (z - 40, y, x)
+
+    def get_pre_synaptic_positions(self, skid):
         pymaid.clear_cache()
+        connectors = pymaid.get_connectors(skid, relation_type='presynaptic_to')
+        x = connectors["x"].to_numpy()
+        y = connectors["y"].to_numpy()
+        z = connectors["z"].to_numpy()
+        return np.vstack([z,y,x]).T, connectors["connector_id"].to_numpy()
+
 
     def __get_instance(self, credentials):
         with open(credentials) as fp:
@@ -57,16 +77,4 @@ class Catmaid(object):
                                    volume=self.volumes)
         return volumes
 
-    def get_synapse_positions(self, skid):
-        connectors = pymaid.get_connectors(skid, relation_type='presynaptic_to')
-        x = connectors["x"].to_numpy()
-        y = connectors["y"].to_numpy()
-        z = connectors["z"].to_numpy()
-        return np.vstack([z,y,x]).T, connectors["connector_id"].to_numpy()
-
-    @staticmethod
-    def transform_position(x,y,z):
-        """
-        Transforms a catmaid position to fafb v14 space.
-        """
-        return (x, y, z-40)
+    

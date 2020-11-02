@@ -1,15 +1,15 @@
 import unittest
 import daisy
-from synistereq.interfaces import NeuPrint
+from synistereq.interfaces import Neuprint
 
-class NeuPrintInitTestCase(unittest.TestCase):
+class NeuprintInitTestCase(unittest.TestCase):
     def runTest(self):
-        interface = NeuPrint()
+        interface = Neuprint()
         self.assertTrue(interface.dataset == "HEMI")
 
-class NeuPrintTransformPositionCase(unittest.TestCase):
+class NeuprintTransformPositionCase(unittest.TestCase):
     def runTest(self):
-        interface = NeuPrint()
+        interface = Neuprint()
         test_position = (80,100,120)
         interface_transform = interface.transform_position(test_position)
 
@@ -23,9 +23,9 @@ class NeuPrintTransformPositionCase(unittest.TestCase):
 
         self.assertTrue(interface_transform == manual_transform)
 
-class NeuPrintTransformPositionsCase(unittest.TestCase):
+class NeuprintTransformPositionsCase(unittest.TestCase):
     def runTest(self):
-        interface = NeuPrint()
+        interface = Neuprint()
         test_positions = [(80,100,120), (100,200,300)]
         interface_transforms = interface.transform_positions(test_positions)
         interface_transforms_individual = [interface.transform_position(p) for p in test_positions]

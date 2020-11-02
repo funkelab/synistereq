@@ -1,6 +1,6 @@
 from .service_interface import ServiceInterface
 
-class NeuPrint(ServiceInterface):
+class Neuprint(ServiceInterface):
     def __init__(self, credentials=None):
         dataset = "HEMI"
         super().__init__(dataset, credentials)

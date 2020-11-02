@@ -1,6 +1,6 @@
-from service_interface import ServiceInterface
+from .service_interface import ServiceInterface
 
-class FlyWire(ServiceInterface):
+class Flywire(ServiceInterface):
     def __init__(self, credentials=None):
         dataset = "FAFB"
         super().__init__(dataset, credentials)

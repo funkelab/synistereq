@@ -12,8 +12,6 @@ class Catmaid(ServiceInterface):
         dataset = "FAFB"
         super().__init__(dataset, credentials)
         self.instance = self.__get_instance(self.credentials)
-        pymaid.clear_cache()
-        self.volumes = self.__get_volumes()
 
     def transform_position(self, position):
         return(position[0] - 40, position[1], position[2])
@@ -41,35 +39,3 @@ class Catmaid(ServiceInterface):
                                         user,
                                         password)
         return rm
-
-
-    def __get_volumes(self):
-        # All volumes in instance
-        volumes = pymaid.get_volume()
-
-        # Filter out trash (user id 55 is safe)
-        volumes = volumes.loc[volumes['user_id']==55]
-
-        # Filter out v14 prefixes:
-        volumes = volumes.loc[~volumes["name"].str.contains('14')]
-
-        volumes = list(volumes["name"])
-
-        return volumes
-
-
-    def get_volume(self, positions):
-        """
-        2D array: [[x, y, z], (...), ...]
-                                    in (Catmaid != FAFB) world
-                                    coordinates.
-
-        returns: For each position a list of associated
-        brain regions.
-        """
-
-        volumes = pymaid.in_volume(x=positions,
-                                   volume=self.volumes)
-        return volumes
-
-    

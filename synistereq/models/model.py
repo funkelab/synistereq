@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 import os
+import torch
 import torch.nn.functional as F
 
 
@@ -37,7 +38,7 @@ class Model(ABC):
         """
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         batch = torch.tensor(batch, device=device)
-        batch.unsqueeze(1)
+        batch = batch.unsqueeze(1)
         return batch
 
     def softmax(self, prediction):

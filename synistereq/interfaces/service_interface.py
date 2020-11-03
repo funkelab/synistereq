@@ -21,6 +21,7 @@ class ServiceInterface(ABC):
 
             Returns:
                 positions (list of tuple of int): list of presynaptic positions in skid [(z1,y1,x1), (z2,y2,x2),...]
+                ids (list of ints): associated ids
         """
         pass
 

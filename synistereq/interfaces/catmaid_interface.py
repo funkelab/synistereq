@@ -25,7 +25,7 @@ class Catmaid(ServiceInterface):
         y = connectors["y"].to_numpy()
         z = connectors["z"].to_numpy()
         pos_array, ids = np.vstack([z,y,x]).T, connectors["connector_id"].to_numpy()
-        return [tuple(np.round(p).astype(np.uint64)) for p in pos_array]
+        return [tuple(np.round(p).astype(np.uint64)) for p in pos_array], ids
 
 
     def __get_instance(self, credentials):

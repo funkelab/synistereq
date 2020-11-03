@@ -1,4 +1,5 @@
 import numpy as np
+from tqdm import tqdm
 
 from synistereq.datasets import Fafb, Hemi
 from synistereq.models import FafbModel, HemiModel
@@ -9,7 +10,7 @@ known_models = {"FAFB_MODEL": FafbModel, "HEMI_MODEL": HemiModel}
 known_services = {"CATMAID": Catmaid, "NEUPRINT": Neuprint}
 
 def predict_neurotransmitters(dataset,
-                              service,
+                              service=None,
                               skids=None,
                               positions=None,
                               position_ids=None,
@@ -26,14 +27,16 @@ def predict_neurotransmitters(dataset,
     check_arguments(dataset,
                     service,
                     skids,
-                    positions)
+                    positions,
+                    position_ids)
 
-    dataset = known_datasets[dataset]
-    model = known_models[f"{dataset}_MODEL"]
-    service = known_services[service]
+    model = known_models[f"{dataset}_MODEL"]()
+    dataset = known_datasets[dataset]()
+    service = known_services[service]()
 
     positions, position_ids = prepare_positions(positions, position_ids)
     positions, position_ids, ids_to_skids = prepare_skids(skids, service, positions, position_ids)
+    positions = service.transform_positions(positions)
     nt_probabilities = predict_neurotransmitters_from_positions(positions, dataset, model, batch_size)
 
     return nt_probabilities, positions, position_ids, ids_to_skids
@@ -52,7 +55,7 @@ def predict_neurotransmitters_from_positions(positions,
     if dataset.name != model.dataset:
         raise ValueError(f"Dataset ({dataset.name}) model ({model.dataset}) missmatch")
 
-    torch_model = model.init()
+    torch_model = model.init_model()
     torch_model.eval()
 
     nt_probabilities = []
@@ -67,13 +70,13 @@ def predict_neurotransmitters_from_positions(positions,
 
         # Iterate over batch and grab predictions
         for k in range(np.shape(prediction)[0]):
-            out_k = output[k,:].tolist()
+            out_k = prediction[k,:].tolist()
             nt_probability = {model.neurotransmitter_list[i]:
                               out_k[i] for i in range(len(model.neurotransmitter_list))}
             nt_probabilities.append(nt_probability)
 
     return nt_probabilities
-    
+
 def check_arguments(dataset, service, skids, positions, position_ids):
     if skids is None and positions is None:
         raise ValueError("Provide either skids or positions")

@@ -1,0 +1,24 @@
+\pgfplotstableread[col sep = comma]{l1.csv}\datatable
+\pgfplotstabletranspose[col sep=comma,colnames from=skid,input colnames to=skid]{\data}{\datatable}
+\pgfplotsset{yticklabel style={text width=3em,align=right}}
+  %\foreach \skididx in {1,...,15}{%
+  \foreach \skididx in {1,...,1}{%
+    \pgfmathsetmacro{\rownum}{\skididx-1}
+    \pgfmathparse{int(\skididx - 1)}\let\jm=\pgfmathresult
+    \noindent \pgfplotstablegetelem{\jm}{skid}\of\datatable \pgfplotsretval\qquad
+    \begin{tikzpicture}[baseline={([yshift=-\baselineskip]p.north)}]
+      \begin{axis}[
+        height=4cm,
+        width=10cm,
+        ybar,
+        typeset ticklabels with strut,
+        xtick=data,
+          xticklabel style={rotate=60},
+        xticklabels from table={\data}{skid},
+        name=p
+      ]
+          \addplot table[x expr=\coordindex,y index=\skididx]{\data};
+      \end{axis}
+    \end{tikzpicture}%
+    \par
+  }%

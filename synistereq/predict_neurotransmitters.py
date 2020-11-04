@@ -14,6 +14,7 @@ def predict_neurotransmitters(dataset,
                               skids=None,
                               positions=None,
                               position_ids=None,
+                              position_ids_to_skids=None,
                               batch_size=24):
     """
     Args:
@@ -35,11 +36,12 @@ def predict_neurotransmitters(dataset,
     service = known_services[service]()
 
     positions, position_ids = prepare_positions(positions, position_ids)
-    positions, position_ids, ids_to_skids = prepare_skids(skids, service, positions, position_ids)
+    positions, position_ids, position_ids_to_skids = prepare_skids(skids, service, positions,
+                                                          position_ids, position_ids_to_skids)
     positions = service.transform_positions(positions)
     nt_probabilities = predict_neurotransmitters_from_positions(positions, dataset, model, batch_size)
 
-    return nt_probabilities, positions, position_ids, ids_to_skids
+    return nt_probabilities, positions, position_ids, position_ids_to_skids
 
 def predict_neurotransmitters_from_positions(positions,
                                              dataset,
@@ -99,16 +101,14 @@ def prepare_positions(positions, position_ids):
 
     return positions, position_ids
 
-def prepare_skids(skids, service, positions, position_ids):
-    ids_to_skid = {id_: None for id_ in position_ids}
-
+def prepare_skids(skids, service, positions, position_ids, position_ids_to_skids):
     if skids is not None:
         for skid in skids:
             positions_skid, ids_skid = service.get_pre_synaptic_positions(skid)
             positions.extend(positions_skid)
             position_ids.extend(ids_skid)
             for id_ in ids_skid:
-                ids_to_skid[id_] = skid
+                position_ids_to_skids[id_] = skid
 
-    return positions, position_ids, ids_to_skid
+    return positions, position_ids, position_ids_to_skids
 

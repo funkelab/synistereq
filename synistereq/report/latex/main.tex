@@ -1,0 +1,30 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage{graphicx}
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{pgfplotstable}
+\usepackage{hyperref}
+
+\begin{document}
+   \title{Neurotransmitter Prediction Report\\ \small{Funke Lab - ecksteinn@hhmi.org}}
+   \date{\today}
+   \maketitle
+   \section{Disclaimer}
+   While the accuracy of neurotransmitter prediction is high on our test sets, not all predictions are guaranteed to be correct. In particular, we do not know how the network behaves for all neurons in the brain. While we have not observed this so far, 
+   it is possible that some neurons in the brain are "out of distribution", i.e. so different to anything the network has seen during training that it results in missprediction.  
+   Under normal circumstances the likelihood for a wrong prediction goes down with the number of annotated, and predicted synapses in a neuron. Any prediction based on less than 100 synapses should be
+   viewed as uncertain. In such a case we recommend to annotate more synapses, in the ideal case picking sites to annotate at random from the entirety of the neuron, and request another round of predictions. Any prediction that does not have a clear majority neurotransmitter should be considered uncertain.  For further details see: \url{https://www.biorxiv.org/content/10.1101/2020.06.12.148775v1}. \\ \\
+   If this data is useful to you and you happen to experimentally determine the neurotransmitter of some of the neurons in this dataset, please get in touch so we can incorporate the data in our evaluation and training, and make the method more accurate for everyone.\\ \\ This is an automatically
+   generated report. If you find any errors or inconstencies please let us know.
+   \section{Data Formatting}
+   Besides this pdf the zip archive contains three other files containing the raw data formatted in a hierarchical fashion:
+   \begin{itemize}
+       \item \textbf{level\_0.csv} - contains the predictions for each synapse. Every row in the table represents one synapse and shows the softmax output probabilities for each of the six considered neurotransmitter classes (gaba, acetylcholine, glutamate, serotonin, octopamine, dopamine) and the maximum class. Furthermore it contains the catmaid connector id (Connector), the skeleton id (skid) and x,y,z positions in FAFB\_v14 space.
+       \item \textbf{level\_1.csv} - contains the number of synapses, predicted to be neurotransmitter $N$ for all neurons in the request, indexed by skid.
+       \item \textbf{level\_2.csv} - contains the majority vote neurotransmitter over all synapses of each skeleton and the associated number of synapses of that neurotransmitter, as well as the total number of annotated synapses in the neuron. 
+   \end{itemize}
+   \section{Results}
+    \centering
+   \input{bar.tikz.tex}
+\end{document}
+

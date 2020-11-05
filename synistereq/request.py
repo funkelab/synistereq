@@ -1,5 +1,5 @@
 from synistereq.predict_neurotransmitters import predict_neurotransmitters
-from synistereq.utils import read_skids_csv, read_positions_csv, format_predictions, write_predictions
+from synistereq.utils import read_skids_csv, read_positions_csv, format_predictions, write_predictions, log_config
 from synistereq.report import generate_report
 import argparse
 
@@ -20,10 +20,13 @@ parser.add_argument("--out", help="Output file path",
 		    type=str, default="./predictions.csv", required=False)
 parser.add_argument("--report", help="Report file path", 
 		    type=str, default="./report.pdf", required=False)
-
+parser.add_argument("--log", help="Log file output path", 
+		    type=str, default="./request.log", required=False)
 
 if __name__ == "__main__":
     args = parser.parse_args()
+    log_config(args.log)
+
     skids = None
     if args.skids is not None:
         skids = read_skids_csv(args.skids)
@@ -41,10 +44,6 @@ if __name__ == "__main__":
                                                                                                 position_ids,
                                                                                                 position_ids_to_skids,
                                                                                                 args.batch_size)
-    print(nt_probabilities)
-    print(positions)
-    print(position_ids)
-    print(position_ids_to_skids)
     predictions = format_predictions(nt_probabilities,
                                      positions,
                                      position_ids,

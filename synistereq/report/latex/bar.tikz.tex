@@ -2,7 +2,7 @@
 \pgfplotstabletranspose[col sep=comma,colnames from=skid,input colnames to=skid]{\data}{\datatable}
 \pgfplotsset{yticklabel style={text width=3em,align=right}}
   %\foreach \skididx in {1,...,15}{%
-  \foreach \skididx in {1,...,1}{%
+  \foreach \skididx in {1,...,5}{%
     \pgfmathsetmacro{\rownum}{\skididx-1}
     \pgfmathparse{int(\skididx - 1)}\let\jm=\pgfmathresult
     \noindent \pgfplotstablegetelem{\jm}{skid}\of\datatable \pgfplotsretval\qquad

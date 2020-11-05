@@ -4,7 +4,8 @@ import numpy as np
 class Neuprint(ServiceInterface):
     def __init__(self, credentials=None):
         dataset = "HEMI"
-        super().__init__(dataset, credentials)
+        name = "NEUPRINT"
+        super().__init__(dataset, name, credentials)
 
     def transform_position(self, position):
         """

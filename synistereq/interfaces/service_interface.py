@@ -1,13 +1,18 @@
 from abc import ABC, abstractmethod
+import logging
+import time
+
+log = logging.getLogger(__name__)
 
 known_datasets = ["FAFB", "HEMI"]
 
 class ServiceInterface(ABC):
-    def __init__(self, dataset, credentials=None):
+    def __init__(self, dataset, name, credentials=None):
         if not dataset in known_datasets:
             raise ValueError(f"Dataset {dataset} not known")
         self.dataset = dataset
         self.credentials = credentials
+        self.name = name
         super().__init__()
 
     @abstractmethod
@@ -50,6 +55,9 @@ class ServiceInterface(ABC):
             Returns:
                 transformed_positions (list of tuple of ints): [(z,y,x), ...] list of positions in dataset space.
         """
+        log.info(f"Transform {len(positions)}, assuming {self.name} coordinates...")
+        start = time.time()
         transformed_positions = [self.transform_position(p) for p in positions]
+        log.info(f"... took {time.time() - start} seconds.")
         return transformed_positions
 

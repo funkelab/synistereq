@@ -1,5 +1,6 @@
 import pandas
 import csv
+import logging
 
 def read_skids_csv(csv_path):
     """
@@ -62,3 +63,18 @@ def write_predictions(formatted_predictions, output_file):
     with open(output_file, "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerows(formatted_predictions) 
+
+
+def log_config(log_file):
+    logging.basicConfig(
+         filename=log_file,
+         level=logging.INFO,
+         format='%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s',
+         datefmt='%H:%M:%S')
+
+    console = logging.StreamHandler()
+    console.setLevel(logging.INFO)
+    formatter = logging.Formatter('%(message)s')
+    console.setFormatter(formatter)
+    logging.getLogger('').addHandler(console)
+

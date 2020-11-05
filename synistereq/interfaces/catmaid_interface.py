@@ -10,7 +10,8 @@ class Catmaid(ServiceInterface):
                  credentials=os.path.join(os.path.abspath(os.path.dirname(__file__)), 
                                                           "../credentials/catmaid_credentials.ini")):
         dataset = "FAFB"
-        super().__init__(dataset, credentials)
+        name = "CATMAID"
+        super().__init__(dataset, name, credentials)
         self.instance = self.__get_instance(self.credentials)
 
     def transform_position(self, position):

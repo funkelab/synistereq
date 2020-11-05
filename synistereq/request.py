@@ -35,6 +35,8 @@ if __name__ == "__main__":
     position_ids = None
     if args.positions is not None:
         positions, position_ids, position_ids_to_skids = read_positions_csv(args.positions)
+    else:
+        position_ids_to_skids = {}
 
 
     nt_probabilities, positions, position_ids, position_ids_to_skids = predict_neurotransmitters(args.dataset,

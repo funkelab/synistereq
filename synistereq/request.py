@@ -21,7 +21,7 @@ parser.add_argument("--out", help="Output file path",
 parser.add_argument("--report", help="Report file path", 
 		    type=str, default="./report.pdf", required=False)
 parser.add_argument("--log", help="Log file output path", 
-		    type=str, default="./request.log", required=False)
+		    type=str, default="./predictions.log", required=False)
 
 if __name__ == "__main__":
     args = parser.parse_args()

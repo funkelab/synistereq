@@ -4,7 +4,7 @@ from tqdm import tqdm
 
 from synistereq.datasets import Fafb, Hemi
 from synistereq.models import FafbModel, HemiModel
-from synistereq.interfaces import Catmaid, Neuprint
+from synistereq.interfaces import Catmaid, Neuprint, Flywire
 
 import time
 import logging
@@ -16,7 +16,7 @@ torch.backends.cudnn.benchmark = True
 
 known_datasets = {"FAFB": Fafb, "HEMI": Hemi}
 known_models = {"FAFB_MODEL": FafbModel, "HEMI_MODEL": HemiModel}
-known_services = {"CATMAID": Catmaid, "NEUPRINT": Neuprint}
+known_services = {"CATMAID": Catmaid, "NEUPRINT": Neuprint, "FLYWIRE": Flywire}
 
 def predict_neurotransmitters(dataset,
                               service=None,
@@ -135,9 +135,9 @@ def check_arguments(dataset, service, skids, positions, position_ids):
     if service is None and not skids is None:
         raise ValueError("Provide service if querying for skids")
     if not dataset in list(known_datasets.keys()):
-        raise ValueError(f"Dataset f{dataset} not known")
+        raise ValueError(f"Dataset {dataset} not known")
     if not service in list(known_services.keys()):
-        raise ValueError(f"Service f{service} not known")
+        raise ValueError(f"Service {service} not known")
     if not f"{dataset}_MODEL" in list(known_models.keys()):
         raise ValueError(f"Model f{dataset}_MODEL not known")
 

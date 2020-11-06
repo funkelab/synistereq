@@ -4,17 +4,21 @@ import os
 import numpy as np
 
 from .service_interface import ServiceInterface
+from synistereq.datasets import Fafb
 
 class Catmaid(ServiceInterface):
     def __init__(self, 
                  credentials=os.path.join(os.path.abspath(os.path.dirname(__file__)), 
                                                           "../credentials/catmaid_credentials.ini")):
-        dataset = "FAFB"
+        dataset = Fafb()
         name = "CATMAID"
         super().__init__(dataset, name, credentials)
         self.instance = self.__get_instance(self.credentials)
 
     def transform_position(self, position):
+        """
+        Positions are expected in physical coordinates and z,y,x order.
+        """
         return(position[0] - 40, position[1], position[2])
 
     def get_pre_synaptic_positions(self, skid):

@@ -1,9 +1,10 @@
 from .service_interface import ServiceInterface
+from synistereq.datasets import Hemi
 import numpy as np
 
 class Neuprint(ServiceInterface):
     def __init__(self, credentials=None):
-        dataset = "HEMI"
+        dataset = Hemi()
         name = "NEUPRINT"
         super().__init__(dataset, name, credentials)
 
@@ -23,7 +24,7 @@ class Neuprint(ServiceInterface):
         x = position[2]
 
         transformed_position = np.array([x_shape_hemi - x - 1, z, y])
-        transformed_position *= 8 # Neuprint coords are physical
+        transformed_position *= self.dataset.voxel_size # Neuprint coords are physical
         return tuple(transformed_position)
 
     def get_pre_synaptic_positions(self, skid):

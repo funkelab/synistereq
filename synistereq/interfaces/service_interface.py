@@ -4,12 +4,8 @@ import time
 
 log = logging.getLogger(__name__)
 
-known_datasets = ["FAFB", "HEMI"]
-
 class ServiceInterface(ABC):
     def __init__(self, dataset, name, credentials=None):
-        if not dataset in known_datasets:
-            raise ValueError(f"Dataset {dataset} not known")
         self.dataset = dataset
         self.credentials = credentials
         self.name = name
@@ -46,7 +42,7 @@ class ServiceInterface(ABC):
 
     def transform_positions(self, positions):
         """
-        Transform positions [(z,y,x), (z,y,x)] from service coordinate system
+        Transform positions [(z,y,x), (z,y,x)] from service coordinate system (physical!)
         to underlying dataset.
             
             Args:

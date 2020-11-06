@@ -38,6 +38,52 @@ def read_positions_csv(csv_path):
     positions = [(z,y,x) for z,y,x in zip(z_list, y_list, x_list)]
     return positions, position_ids, position_ids_to_skids
 
+def prepare_position_csv(csv_files, output_csv, skid_column=None, 
+                         id_column=None, skids_per_csv=None):
+    i = 0
+    all_position_ids = []
+    all_skids = []
+    all_x = []
+    all_y = []
+    all_z = []
+    for csv_path in csv_files:
+        position_ids = None
+        skids = None
+        data = pandas.read_csv(csv_path)
+        # position columns are required
+        x_list = data["x"].to_list()
+        y_list = data["y"].to_list()
+        z_list = data["z"].to_list()
+        all_x.extend(x_list)
+        all_y.extend(y_list)
+        all_z.extend(z_list)
+
+        if skid_column is not None:
+            skids = data[skid_column].to_list()
+        else:
+            if skids_per_csv is not None:
+                skids = [skids_per_csv[i]] * len(x_list)
+            else:
+                skids = [i] * len(x_list)
+
+        all_skids.extend(skids)
+
+        if id_column is not None:
+            position_ids = data[id_column].to_list()
+        else:
+            id0 = len(all_position_ids)
+            id_max = len(x_list) + id0
+            position_ids = [k for k in range(id0, id_max)]
+
+        all_position_ids.extend(position_ids)
+        i += 1
+
+    header = ["id", "skid", "x", "y", "z"]
+    table = [header]
+    for id_, skid, x, y, z in zip(all_position_ids, all_skids, all_x, all_y, all_z):
+        table.append([id_, skid, x, y, z])
+    write_predictions(table, output_csv)
+
 def format_predictions(nt_probabilities, positions, position_ids, position_ids_to_skids):
     # Table layout: 
     # position_id, skid, x, y, z, nt1, ..., ntN
@@ -77,4 +123,5 @@ def log_config(log_file):
     formatter = logging.Formatter('%(message)s')
     console.setFormatter(formatter)
     logging.getLogger('').addHandler(console)
+
 

@@ -49,7 +49,7 @@ class Dataset(ABC):
             offset_nm = position - ((size/2) * voxel_size)
             roi = daisy.Roi(offset_nm, size_nm).snap_to_grid(voxel_size, mode='closest')
 
-            if roi.get_shape()[0] != size[0]:
+            if roi.get_shape()[0] != size_nm[0]:
                 roi.set_shape(size_nm)
 
             if not dataset.roi.contains(roi):

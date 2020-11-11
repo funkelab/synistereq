@@ -5,6 +5,7 @@ from tqdm import tqdm
 from synistereq.datasets import Fafb, Hemi
 from synistereq.models import FafbModel, HemiModel
 from synistereq.interfaces import Catmaid, Neuprint, Flywire
+from synistereq.loader import get_data_loader
 
 import time
 import logging
@@ -55,7 +56,9 @@ def predict_neurotransmitters(dataset,
 def predict_neurotransmitters_from_positions(positions,
                                              dataset,
                                              model,
-                                             batch_size=24):
+                                             batch_size=24,
+                                             prefatch_factor=30,
+                                             num_workers=5):
     """
     positions `list of array-like of ints`:
         Synaptic postions in the given dataset [(z0,y0,x0), (z1, y1, x1), ...]
@@ -74,25 +77,22 @@ def predict_neurotransmitters_from_positions(positions,
 
     log.info(f"Start prediction with batch size {batch_size}...")
     start = time.time()
+    loader = get_data_loader(positions, 
+                             dataset, 
+                             model.input_shape, 
+                             batch_size,
+                             num_workers,
+                             prefatch_factor)
+
     nt_probabilities = []
     t_normalize = 0
     t_get_crops = 0
     t_predict = 0
-    for i in tqdm(range(0, len(positions), batch_size)):
-        batched_positions = positions[i:i+batch_size]
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    for i, sample in enumerate(tqdm(loader)):
+        sample = sample.to(device)
         t0 = time.time()
-        crops = dataset.get_crops(batched_positions,
-                                  model.input_shape)
-        t_get_crops += time.time() - t0
-
-        t0 = time.time()
-        crops = dataset.normalize(crops)
-        t_normalize += time.time() - t0
-
-        crops = model.prepare_batch(crops)
-        
-        t0 = time.time()
-        prediction = torch_model(crops)
+        prediction = torch_model(sample)
         prediction = model.softmax(prediction)
         t_predict += time.time() - t0
 
@@ -107,15 +107,11 @@ def predict_neurotransmitters_from_positions(positions,
     total_time = time.time() - start
     log_stats(n_positions, 
               total_time, 
-              t_normalize, 
-              t_get_crops, 
               t_predict)
 
     return nt_probabilities
 
-def log_stats(n_positions, total_time, t_normalize, t_get_crops, t_predict):
-    p_normalize = t_normalize/total_time * 100
-    p_get_crops = t_get_crops/total_time * 100
+def log_stats(n_positions, total_time, t_predict):
     p_predict = t_predict/total_time * 100
     log.info(f"Predicition of {n_positions} took {total_time} seconds.") 
     log.info(f"{total_time/n_positions} per position.")
@@ -123,8 +119,6 @@ def log_stats(n_positions, total_time, t_normalize, t_get_crops, t_predict):
     log.info(f"Predicted positions: {n_positions}")
     log.info(f"Total time: {total_time}")
     log.info(f"Time per position: {total_time/n_positions}")
-    log.info(f"Normalize: {t_normalize} ({p_normalize}%)")
-    log.info(f"Fetch: {t_get_crops} ({p_get_crops}%)")
     log.info(f"Predict: {t_predict} ({p_predict}%)")
 
 def check_arguments(dataset, service, skids, positions, position_ids):

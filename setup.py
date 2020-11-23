@@ -9,4 +9,8 @@ setup(
     packages=[
         'synistereq',
         'synistereq.interfaces',
+        'synistereq.datasets',
+        'synistereq.models',
+        'synistereq.checkpoints',
+        'synistereq.loader'
         ])

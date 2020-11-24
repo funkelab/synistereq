@@ -43,3 +43,11 @@ class Model(ABC):
 
     def softmax(self, prediction):
         return F.softmax(prediction, dim=1)
+
+    def __get_checkpoint_path(self):
+        with open("../checkpoint_paths.ini") as fp:
+            config = configparser.ConfigParser()
+            config.readfp(fp)
+            checkpoint = os.path.abspath(config.get("Models", self.dataset))
+        return checkpoint
+

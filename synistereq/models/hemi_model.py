@@ -7,8 +7,7 @@ from .model import Model
 class HemiModel(Model):
     def __init__(self):
         dataset = "HEMI"
-        checkpoint = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                                  "../checkpoints/hemi_checkpoint")
+        checkpoint = self.__get_checkpoint_path()
         input_shape = (80, 80, 80)
         neurotransmitter_list = ["gaba", "acetylcholine", "glutamate",
                                  "serotonin", "octopamine", "dopamine"]

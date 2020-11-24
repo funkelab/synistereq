@@ -12,5 +12,9 @@ setup(
         'synistereq.datasets',
         'synistereq.models',
         'synistereq.checkpoints',
-        'synistereq.loader'
-        ])
+        'synistereq.loader',
+        'synistereq.report'
+        ],
+    package_data={"": ["*.ini"]},
+    include_package_data=True,
+    install_requires=[])

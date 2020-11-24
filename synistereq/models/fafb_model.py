@@ -7,8 +7,7 @@ from .model import Model
 class FafbModel(Model):
     def __init__(self):
         dataset = "FAFB"
-        checkpoint = os.path.join(os.path.dirname(os.path.abspath(__file__)), 
-                                  "../checkpoints/fafb_checkpoint")
+        checkpoint = self.__get_checkpoint_path()
         input_shape = (16,160,160)
         neurotransmitter_list = ["gaba", "acetylcholine", "glutamate",
                                  "serotonin", "octopamine", "dopamine"]

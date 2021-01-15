@@ -25,7 +25,6 @@ class PositionDataset(Dataset):
                  dataset,
                  size):
 
-        self.positions = positions
         self.container = dataset.container
         self.dataset = dataset
         self.dset = dataset.dataset
@@ -34,7 +33,26 @@ class PositionDataset(Dataset):
         self.voxel_size = daisy.Coordinate(dataset.voxel_size)
         self.size = daisy.Coordinate(size)
         self.size_nm = self.size * self.voxel_size
+
+        self.positions = self.filter_positions(positions)
         self.transform = None
+
+    def filter_positions(self, positions):
+        """
+        Filter out those positions whose roi is not fully
+        contained in data.
+        """
+        positions_filtered = []
+
+        data_roi = self.data.roi
+        for p in positions:
+            p_daisy = daisy.Coordinate(p)
+            offset_nm = p_daisy - self.size_nm/2
+            p_roi = daisy.Roi(offset_nm, self.size_nm).snap_to_grid(self.voxel_size, mode='closest')
+            if data_roi.contains(p_roi):
+                positions_filtered.append(p)
+
+        return positions_filtered
 
     def __getitem__(self, idx):
         position = daisy.Coordinate(self.positions[idx])

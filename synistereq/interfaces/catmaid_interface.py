@@ -9,7 +9,7 @@ from synistereq.datasets import Fafb
 class Catmaid(ServiceInterface):
     def __init__(self, 
                  credentials=os.path.join(os.path.abspath(os.path.dirname(__file__)), 
-                                                          "../credentials/catmaid_credentials.ini")):
+                                                          "../catmaid_credentials.ini")):
         dataset = Fafb()
         name = "CATMAID"
         super().__init__(dataset, name, credentials)

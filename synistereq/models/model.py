@@ -2,13 +2,11 @@ from abc import ABC, abstractmethod
 import os
 import torch
 import torch.nn.functional as F
+import configparser
 
 
 class Model(ABC):
     def __init__(self, dataset, checkpoint, input_shape, neurotransmitter_list):
-        if not os.path.exists(checkpoint):
-            raise ValueError(f"Checkpoint {checkpoint} does not exist")
-
         self.dataset = dataset
         self.checkpoint = checkpoint
         self.input_shape = input_shape
@@ -44,8 +42,9 @@ class Model(ABC):
     def softmax(self, prediction):
         return F.softmax(prediction, dim=1)
 
-    def __get_checkpoint_path(self):
-        with open("../checkpoint_paths.ini") as fp:
+    def get_checkpoint_path(self):
+        with open(os.path.join(os.path.dirname(__file__), 
+                               "../checkpoint_paths.ini"), "r") as fp:
             config = configparser.ConfigParser()
             config.readfp(fp)
             checkpoint = os.path.abspath(config.get("Models", self.dataset))

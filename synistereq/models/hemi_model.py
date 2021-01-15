@@ -7,11 +7,12 @@ from .model import Model
 class HemiModel(Model):
     def __init__(self):
         dataset = "HEMI"
-        checkpoint = self.__get_checkpoint_path()
         input_shape = (80, 80, 80)
+        checkpoint = None
         neurotransmitter_list = ["gaba", "acetylcholine", "glutamate",
                                  "serotonin", "octopamine", "dopamine"]
         super().__init__(dataset, checkpoint, input_shape, neurotransmitter_list)
+        self.checkpoint = self.get_checkpoint_path()
 
     def init_model(self):
         input_shape = self.input_shape

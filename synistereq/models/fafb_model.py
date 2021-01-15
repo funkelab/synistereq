@@ -7,11 +7,13 @@ from .model import Model
 class FafbModel(Model):
     def __init__(self):
         dataset = "FAFB"
-        checkpoint = self.__get_checkpoint_path()
         input_shape = (16,160,160)
+        checkpoint = None
         neurotransmitter_list = ["gaba", "acetylcholine", "glutamate",
                                  "serotonin", "octopamine", "dopamine"]
         super().__init__(dataset, checkpoint, input_shape, neurotransmitter_list)
+        self.checkpoint = self.get_checkpoint_path()
+
 
     def init_model(self):
         input_shape = self.input_shape

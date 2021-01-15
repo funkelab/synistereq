@@ -5,12 +5,12 @@ from synistereq.interfaces import Catmaid
 class CatmaidInitTestCase(unittest.TestCase):
     def runTest(self):
         interface = Catmaid()
-        self.assertTrue(interface.dataset == "FAFB")
+        self.assertTrue(interface.dataset.name == "FAFB")
 
 class CatmaidGetPreSynapticPositionsTestCase(unittest.TestCase):
     def runTest(self):
         interface = Catmaid()
-        presynaptic_positions = interface.get_pre_synaptic_positions(16)
+        presynaptic_positions = interface.get_pre_synaptic_positions(16)[0]
         test_pos = (217440, 164242, 438817) 
 
         # These tests may fail if there are large annotations changes:

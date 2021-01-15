@@ -16,7 +16,7 @@ class Flywire(ServiceInterface):
         raise NotImplementedError("Transformation not supported for a single point, use transform_positions")
         return None
 
-    def transform_positions(self, positions, batch_size=10000, scale=4):
+    def transform_positions(self, positions, batch_size=1000, scale=4):
         """
         Positions always in physical space. (z,y,x) convention.
 

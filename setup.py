@@ -4,7 +4,7 @@ setup(
     name='synistereq',
     version='0.1',
     description='Neurotransmitter classification requests',
-    url='https://github.com/funkelab/synreq',
+    url='https://github.com/funkelab/synistereq',
     author='Funkelab',
     packages=[
         'synistereq',

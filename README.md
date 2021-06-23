@@ -5,9 +5,15 @@ A library to request predictions and reports from a list of skids or locations f
 ```console
 git clone https://github.com/funkelab/synistereq.git
 cd synistereq
-conda create -n synistereq python=3.6 numpy scipy cython
+conda create -n synistereq python=3.8 numpy scipy cython
 pip install -r requirements.txt
 pip install .
+```
+
+Replace the two placeholder checkpoints at synistereq/checkpoints with production network checkpoints:
+```
+fafb_checkpoint.placeholder -> fafb_checkpoint
+hemi_checkpoint.placeholder -> hemi_checkpoint
 ```
 
 ## Usage

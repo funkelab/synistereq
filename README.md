@@ -16,6 +16,14 @@ fafb_checkpoint.placeholder -> fafb_checkpoint
 hemi_checkpoint.placeholder -> hemi_checkpoint
 ```
 
+Replace the two placeholder credentials at synistereq
+```
+neuprint_credentials_placeholder.ini -> neuprint_credentials.ini
+catmaid_credentials_placeholder.ini -> catmaid_credentials.ini
+```
+
+Update the file paths in `synistereq/checkpoint_paths.ini`
+
 ## Usage
 In order to predict from a csv file containing skids or body ids, run request from the root directory via:
 ```console

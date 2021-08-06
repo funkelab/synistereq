@@ -20,6 +20,7 @@ known_models = {"FAFB_MODEL": FafbModel, "HEMI_MODEL": HemiModel}
 known_services = {"CATMAID": Catmaid, "NEUPRINT": Neuprint, "FLYWIRE": Flywire}
 
 def predict_neurotransmitters(dataset,
+                              neither,
                               service=None,
                               skids=None,
                               positions=None,
@@ -43,6 +44,8 @@ def predict_neurotransmitters(dataset,
 
     model = known_models[f"{dataset}_MODEL"]()
     dataset = known_datasets[dataset]()
+    if(neither):
+        model.neurotransmitter_list.append("neither")
     service = known_services[service]()
 
     positions, position_ids = prepare_positions(positions, position_ids)

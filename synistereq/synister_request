@@ -25,10 +25,12 @@ parser.add_argument("--report", help="Report file path",
 parser.add_argument("--log", help="Log file output path", 
 		    type=str, default="./predictions.log", required=False)
 
+parser.add_argument('--neither', required=False, action='store_true', 
+            help='use neither class')
+
 if __name__ == "__main__":
     args = parser.parse_args()
     log_config(args.log)
-
     skids = None
     if args.skids is not None:
         skids = read_skids_csv(args.skids)
@@ -42,6 +44,7 @@ if __name__ == "__main__":
 
 
     nt_probabilities, positions, position_ids, position_ids_to_skids = predict_neurotransmitters(args.dataset,
+                                                                                                args.neither, 
                                                                                                 args.service,
                                                                                                 skids,
                                                                                                 positions,
@@ -54,4 +57,4 @@ if __name__ == "__main__":
                                      position_ids_to_skids)
 
     write_predictions(predictions, args.out)
-    generate_report(args.out, args.report)
+    generate_report(args.out, args.report, args.neither)

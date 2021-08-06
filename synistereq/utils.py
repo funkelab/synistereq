@@ -11,14 +11,17 @@ def read_skids_csv(csv_path):
     skids = list(set([int(skid) for skid in skids]))
     return skids
 
-def read_prediction_csv(csv_path):
+def read_prediction_csv(csv_path, neither):
     data = pandas.read_csv(csv_path)
     position_ids = data["position_id"]
     skids = data["skid"]
     x = data["x"]
     y = data["y"]
     z = data["z"]
-    nt_list = ["gaba", "acetylcholine", "glutamate", "serotonin", "octopamine", "dopamine"]
+    nt_list = ["gaba", "acetylcholine", "glutamate", "serotonin", "octopamine",
+            "dopamine"]
+    if neither: 
+        nt_list.append("neither")
     nts = {nt: data[nt] for nt in nt_list}
     return position_ids, skids, x, y, z, nts
 

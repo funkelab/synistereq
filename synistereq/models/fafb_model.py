@@ -17,7 +17,7 @@ class FafbModel(Model):
 
     def init_model(self):
         input_shape = self.input_shape
-        fmaps = 12
+        fmaps = 16
         downsample_factors = [(1, 2, 2), (1, 2, 2), (1, 2, 2), (2, 2, 2)]
         neurotransmitter_list = self.neurotransmitter_list
         fmap_inc = (2,2,2,2)

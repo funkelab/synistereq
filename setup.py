@@ -13,8 +13,12 @@ setup(
         'synistereq.models',
         'synistereq.checkpoints',
         'synistereq.loader',
-        'synistereq.report'
+        'synistereq.report',
+        'synistereq.report.latex'
         ],
-    package_data={"": ["*.ini"]},
+    scripts=[
+        'synistereq/synister_request'
+    ],
+    package_data={"": ["*.ini","*.tex"]},
     include_package_data=True,
     install_requires=[])

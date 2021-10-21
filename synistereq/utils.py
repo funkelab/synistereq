@@ -2,6 +2,8 @@ import pandas
 import csv
 import logging
 
+HEADER_COLS = ["position_id", "skid", "x", "y", "z"]
+
 def read_skids_csv(csv_path):
     """
     The csv needs to have one column called 'skid'
@@ -18,11 +20,7 @@ def read_prediction_csv(csv_path, neither):
     x = data["x"]
     y = data["y"]
     z = data["z"]
-    nt_list = ["gaba", "acetylcholine", "glutamate", "serotonin", "octopamine",
-            "dopamine"]
-    if neither: 
-        nt_list.append("neither")
-    nts = {nt: data[nt] for nt in nt_list}
+    nts = {nt: data[nt] for nt in data.columns if nt not in HEADER_COLS}
     return position_ids, skids, x, y, z, nts
 
 def read_positions_csv(csv_path):
@@ -91,7 +89,7 @@ def format_predictions(nt_probabilities, positions, position_ids, position_ids_t
     # Table layout: 
     # position_id, skid, x, y, z, nt1, ..., ntN
 
-    header = ["position_id", "skid", "x", "y", "z"]
+    header = HEADER_COLS.copy()
     header.extend([v for v in nt_probabilities[0].keys()])
     table = [header]
     for nt_prob, pos, pos_id in zip(nt_probabilities, positions, position_ids):

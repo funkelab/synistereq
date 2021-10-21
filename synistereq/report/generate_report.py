@@ -7,7 +7,7 @@ from shutil import copyfile
 
 from synistereq.utils import read_prediction_csv, write_predictions
 
-def generate_report(prediction_csv, output_file, neither): 
+def generate_report(prediction_csv, output_file):
 
     # where to store the temporary latex files
     latex_dir = "./latex"
@@ -20,7 +20,7 @@ def generate_report(prediction_csv, output_file, neither):
         shutil.copy(os.path.join(source_dir, file_name), latex_dir)
 
     # aggregate NT counts per neuron, write them to "l1.csv"
-    processed_predictions, n_skids = process_predictions(prediction_csv, neither)
+    processed_predictions, n_skids = process_predictions(prediction_csv)
     write_predictions(processed_predictions, os.path.join(latex_dir, "l1.csv"))
 
     # modify the latex templates
@@ -40,8 +40,8 @@ def generate_report(prediction_csv, output_file, neither):
     copyfile(os.path.join(latex_dir, "main.pdf"), output_file)
 
 
-def process_predictions(prediction_csv, neither):
-    position_ids, skids, x, y, z, nts = read_prediction_csv(prediction_csv,neither)
+def process_predictions(prediction_csv):
+    position_ids, skids, x, y, z, nts = read_prediction_csv(prediction_csv)
     nt_list = list(nts.keys())
     unique_skids = set(skids)
     skids_to_predictions = {skid: [0 for i in range(len(nt_list))] for skid in unique_skids}

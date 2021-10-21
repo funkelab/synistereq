@@ -13,7 +13,7 @@ def read_skids_csv(csv_path):
     skids = list(set([int(skid) for skid in skids]))
     return skids
 
-def read_prediction_csv(csv_path, neither):
+def read_prediction_csv(csv_path):
     data = pandas.read_csv(csv_path)
     position_ids = data["position_id"]
     skids = data["skid"]
@@ -39,7 +39,7 @@ def read_positions_csv(csv_path):
     positions = [(z,y,x) for z,y,x in zip(z_list, y_list, x_list)]
     return positions, position_ids, position_ids_to_skids
 
-def prepare_position_csv(csv_files, output_csv, skid_column=None, 
+def prepare_position_csv(csv_files, output_csv, skid_column=None,
                          id_column=None, skids_per_csv=None):
     i = 0
     all_position_ids = []
@@ -86,7 +86,7 @@ def prepare_position_csv(csv_files, output_csv, skid_column=None,
     write_predictions(table, output_csv)
 
 def format_predictions(nt_probabilities, positions, position_ids, position_ids_to_skids):
-    # Table layout: 
+    # Table layout:
     # position_id, skid, x, y, z, nt1, ..., ntN
 
     header = HEADER_COLS.copy()
@@ -109,7 +109,7 @@ def format_predictions(nt_probabilities, positions, position_ids, position_ids_t
 def write_predictions(formatted_predictions, output_file):
     with open(output_file, "w", newline="") as f:
         writer = csv.writer(f)
-        writer.writerows(formatted_predictions) 
+        writer.writerows(formatted_predictions)
 
 
 def log_config(log_file):

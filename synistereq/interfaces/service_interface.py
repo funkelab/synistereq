@@ -15,7 +15,7 @@ class ServiceInterface(Transformer):
     @abstractmethod
     def get_pre_synaptic_positions(self, skid):
         """
-        Returns presynaptic positions from skeleton id or 
+        Returns presynaptic positions from skeleton id or
         similar concept in the given service.
 
             Args:

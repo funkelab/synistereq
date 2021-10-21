@@ -86,9 +86,9 @@ def predict_neurotransmitters_from_positions(positions,
 
     log.info(f"Start prediction with batch size {batch_size}...")
     start = time.time()
-    loader = get_data_loader(positions, 
-                             dataset, 
-                             model.input_shape, 
+    loader = get_data_loader(positions,
+                             dataset,
+                             model.input_shape,
                              batch_size,
                              num_workers,
                              prefatch_factor)
@@ -114,15 +114,15 @@ def predict_neurotransmitters_from_positions(positions,
 
     n_positions = len(positions)
     total_time = time.time() - start
-    log_stats(n_positions, 
-              total_time, 
+    log_stats(n_positions,
+              total_time,
               t_predict)
 
     return nt_probabilities
 
 def log_stats(n_positions, total_time, t_predict):
     p_predict = t_predict/total_time * 100
-    log.info(f"Predicition of {n_positions} took {total_time} seconds.") 
+    log.info(f"Predicition of {n_positions} took {total_time} seconds.")
     log.info(f"{total_time/n_positions} per position.")
     log.info(f"Stats:")
     log.info(f"Predicted positions: {n_positions}")

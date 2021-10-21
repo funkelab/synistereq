@@ -26,7 +26,7 @@ def get_data_loader(positions, dataset, size, batch_size, num_workers, prefetch_
     return loader
 
 class PositionDataset(Dataset):
-    def __init__(self, 
+    def __init__(self,
                  positions,
                  dataset,
                  size):
@@ -88,7 +88,7 @@ class PositionDataset(Dataset):
         array = self.data[roi]
         array.materialize()
         array_data = array.data.astype(np.float32)
-        array_data = self.normalize(array_data) 
+        array_data = self.normalize(array_data)
         array_data = self.transform_to_tensor(array_data)
         return array_data
 

@@ -40,7 +40,7 @@ class Neuprint(ServiceInterface):
         z = connectors["z"].to_numpy()
         pos_array, ids = np.vstack([z,y,x]).T, connectors.index.to_numpy()
         return [tuple(np.round(p).astype(np.uint64)) for p in pos_array], ids
- 
+
     def __get_instance(self, credentials):
         with open(credentials) as fp:
             config = configparser.ConfigParser()

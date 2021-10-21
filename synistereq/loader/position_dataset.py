@@ -5,12 +5,18 @@ from torch.utils.data import Dataset, DataLoader
 
 from synistereq.datasets import Fafb
 
+import logging
+
+log = logging.getLogger(__name__)
+
 def get_data_loader(positions, dataset, size, batch_size, num_workers, prefetch_factor):
     dset = PositionDataset(positions, dataset, size)
+    if len(dset) < len(positions):
+        log.warn(f"Filtered out {len(positions) - len(dset)} postions")
     def collate_fn(samples):
         return torch.cat(samples, dim=0)
 
-    loader = DataLoader(dset, 
+    loader = DataLoader(dset,
                         batch_size=batch_size,
                         num_workers=num_workers,
                         prefetch_factor=prefetch_factor,
@@ -30,6 +36,24 @@ class PositionDataset(Dataset):
         self.dset = dataset.dataset
         self.data = daisy.open_ds(self.container,
                                   self.dset)
+
+        # Correct for datasets where the container does not have the voxel size
+        if self.data.voxel_size != tuple(self.dataset.voxel_size):
+            log.warn(
+                "Container has different voxel size than dataset: "\
+                f"{self.data.voxel_size} != {self.dataset.voxel_size}")
+            orig_shape = self.data.roi.get_shape()
+            self.data = daisy.Array(
+                self.data.data,
+                daisy.Roi(
+                    self.data.roi.get_offset(),
+                    self.dataset.voxel_size*self.data.data.shape[-len(self.dataset.voxel_size):]),
+                self.dataset.voxel_size,
+                chunk_shape=self.data.chunk_shape)
+            log.warn(
+                "Reloaded container data with dataset voxel size, changing shape: "\
+                f"{orig_shape} => {self.data.roi.get_shape()}")
+
         self.voxel_size = daisy.Coordinate(dataset.voxel_size)
         self.size = daisy.Coordinate(size)
         self.size_nm = self.size * self.voxel_size

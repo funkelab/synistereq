@@ -2,8 +2,8 @@ import numpy as np
 import torch
 from tqdm import tqdm
 
-from synistereq.datasets import Fafb, Hemi
-from synistereq.models import FafbModel, HemiModel
+from synistereq.datasets import Fafb, Hemi, MaleVnc
+from synistereq.models import FafbModel, HemiModel, MaleVncModel
 from synistereq.loader import get_data_loader
 from synistereq.repositories import KNOWN_REPOSITORIES
 
@@ -15,8 +15,8 @@ log = logging.getLogger(__name__)
 torch.backends.cudnn.enabled = True
 torch.backends.cudnn.benchmark = True
 
-known_datasets = {"FAFB": Fafb, "HEMI": Hemi}
-known_models = {"FAFB_MODEL": FafbModel, "HEMI_MODEL": HemiModel}
+known_datasets = {"FAFB": Fafb, "HEMI": Hemi, "MALE_VNC": MaleVnc}
+known_models = {"FAFB_MODEL": FafbModel, "HEMI_MODEL": HemiModel, "MALE_VNC_MODEL": MaleVncModel}
 
 def predict_neurotransmitters(dataset=None,
                               neither=False,

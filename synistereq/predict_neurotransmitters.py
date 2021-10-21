@@ -94,11 +94,9 @@ def predict_neurotransmitters_from_positions(positions,
                              prefatch_factor)
 
     nt_probabilities = []
-    t_normalize = 0
-    t_get_crops = 0
     t_predict = 0
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    for i, sample in enumerate(tqdm(loader)):
+    for sample in tqdm(loader, desc="Batches"):
         sample = sample.to(device)
         t0 = time.time()
         prediction = torch_model(sample)
@@ -158,7 +156,7 @@ def prepare_skids(skids, service, positions, position_ids, position_ids_to_skids
     log.info("Prepare skids...")
 
     if skids is not None:
-        for skid in skids:
+        for skid in tqdm(skids, desc="Fetching synapse positions for skids"):
             positions_skid, ids_skid = service.get_pre_synaptic_positions(skid)
             positions.extend(positions_skid)
             position_ids.extend(ids_skid)

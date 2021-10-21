@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import synistereq.repositories
+import synistereq.predict_neurotransmitters
 from synistereq.predict_neurotransmitters import predict_neurotransmitters
 from synistereq.utils import read_skids_csv, read_positions_csv, format_predictions, write_predictions, log_config
 from synistereq.report import generate_report
@@ -12,11 +14,12 @@ parser.add_argument("--skids",
 		    default=None, required=False)
 parser.add_argument("--positions", help="File with id, x,y,z columns representing synaptic locations", 
 		    type=str, default=None, required=False)
-parser.add_argument("--dataset", help="FAFB or HEMI", 
-		    type=str, default=None, required=True)
-parser.add_argument("--service", help="CATMAID, NEUPRINT, FLYWIRE", 
-		    type=str, default=None, required=True)
-parser.add_argument("--batch_size", help="FAFB or HEMI", 
+group = parser.add_mutually_exclusive_group(required=True)
+group.add_argument("--repository", help=', '.join(synistereq.repositories.KNOWN_REPOSITORIES.keys()), 
+		    type=str, default=None)
+group.add_argument("--dataset", help=', '.join(synistereq.predict_neurotransmitters.known_datasets.keys()), 
+		    type=str, default=None)
+parser.add_argument("--batch_size", help="Number of locations to predict in each network batch", 
 		    type=int, default=24, required=False)
 parser.add_argument("--out", help="Output file path", 
 		    type=str, default="./predictions.csv", required=False)
@@ -45,7 +48,7 @@ if __name__ == "__main__":
 
     nt_probabilities, positions, position_ids, position_ids_to_skids = predict_neurotransmitters(args.dataset,
                                                                                                 args.neither, 
-                                                                                                args.service,
+                                                                                                args.repository,
                                                                                                 skids,
                                                                                                 positions,
                                                                                                 position_ids,

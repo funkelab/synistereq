@@ -1,10 +1,11 @@
 from abc import ABC, abstractmethod
 import logging
-import time
+
+from synistereq.transformer import Transformer
 
 log = logging.getLogger(__name__)
 
-class ServiceInterface(ABC):
+class ServiceInterface(Transformer):
     def __init__(self, dataset, name, credentials=None):
         self.dataset = dataset
         self.credentials = credentials
@@ -25,35 +26,3 @@ class ServiceInterface(ABC):
                 ids (list of ints): associated ids
         """
         pass
-
-    @abstractmethod
-    def transform_position(self, position):
-        """
-        Returns position in self.dataset space if given
-        positions in service space
-
-            Args:
-                position (tuple of ints): (z,y,x) position in service space.
-
-            Returns:
-                transformed_position (tuple if ints): (z,y,x) position in dataset space.
-        """
-        pass
-
-    def transform_positions(self, positions):
-        """
-        Transform positions [(z,y,x), (z,y,x)] from service coordinate system (physical!)
-        to underlying dataset.
-            
-            Args:
-                positions (list of tuple of ints): [(z,y,x) ...] list of positions in service space.
-
-            Returns:
-                transformed_positions (list of tuple of ints): [(z,y,x), ...] list of positions in dataset space.
-        """
-        log.info(f"Transform {len(positions)}, assuming {self.name} coordinates...")
-        start = time.time()
-        transformed_positions = [self.transform_position(p) for p in positions]
-        log.info(f"... took {time.time() - start} seconds.")
-        return transformed_positions
-

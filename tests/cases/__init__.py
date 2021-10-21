@@ -1,5 +1,5 @@
-from .test_neuprint_interface import *
-from .test_catmaid_interface import *
+from .test_hemi_neuprint_repo import *
+from .test_fafb_catmaid_repo import *
 from .test_fafb_dataset import *
 from .test_hemi_dataset import *
 from .test_fafb_model import *

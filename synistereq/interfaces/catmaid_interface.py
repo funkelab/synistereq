@@ -4,22 +4,20 @@ import os
 import numpy as np
 
 from .service_interface import ServiceInterface
-from synistereq.datasets import Fafb
 
 class Catmaid(ServiceInterface):
-    def __init__(self, 
-                 credentials=os.path.join(os.path.abspath(os.path.dirname(__file__)), 
-                                                          "../catmaid_credentials.ini")):
-        dataset = Fafb()
+    def __init__(
+        self,
+        dataset,
+        api_url,
+        credentials=os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                                                "../catmaid_credentials.ini"),
+    ):
+
         name = "CATMAID"
         super().__init__(dataset, name, credentials)
+        self.api_url = api_url
         self.instance = self.__get_instance(self.credentials)
-
-    def transform_position(self, position):
-        """
-        Positions are expected in physical coordinates and z,y,x order.
-        """
-        return(position[0] - 40, position[1], position[2])
 
     def get_pre_synaptic_positions(self, skid):
         pymaid.clear_cache()
@@ -39,7 +37,7 @@ class Catmaid(ServiceInterface):
             password = config.get("Credentials", "password")
             token = config.get("Credentials", "token")
 
-            rm = pymaid.CatmaidInstance('https://neuropil.janelia.org/tracing/fafb/v14/',
+            rm = pymaid.CatmaidInstance(self.api_url,
                                         token,
                                         user,
                                         password)

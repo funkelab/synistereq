@@ -4,8 +4,8 @@ from tqdm import tqdm
 
 from synistereq.datasets import Fafb, Hemi
 from synistereq.models import FafbModel, HemiModel
-from synistereq.interfaces import Catmaid, Neuprint, Flywire
 from synistereq.loader import get_data_loader
+from synistereq.repositories import KNOWN_REPOSITORIES
 
 import time
 import logging
@@ -17,11 +17,10 @@ torch.backends.cudnn.benchmark = True
 
 known_datasets = {"FAFB": Fafb, "HEMI": Hemi}
 known_models = {"FAFB_MODEL": FafbModel, "HEMI_MODEL": HemiModel}
-known_services = {"CATMAID": Catmaid, "NEUPRINT": Neuprint, "FLYWIRE": Flywire}
 
-def predict_neurotransmitters(dataset,
-                              neither,
-                              service=None,
+def predict_neurotransmitters(dataset=None,
+                              neither=False,
+                              repository=None,
                               skids=None,
                               positions=None,
                               position_ids=None,
@@ -37,21 +36,28 @@ def predict_neurotransmitters(dataset,
     """
 
     check_arguments(dataset,
-                    service,
+                    repository,
                     skids,
                     positions,
                     position_ids)
 
-    model = known_models[f"{dataset}_MODEL"]()
-    dataset = known_datasets[dataset]()
+    if repository is not None:
+        repository = KNOWN_REPOSITORIES[repository]()
+    if dataset is None:
+        dataset = repository.dataset
+    else:
+        dataset = known_datasets[dataset]()
+
+    model = known_models[f"{dataset.name.upper()}_MODEL"]()
     if(neither):
         model.neurotransmitter_list.append("neither")
-    service = known_services[service]()
 
     positions, position_ids = prepare_positions(positions, position_ids)
-    positions, position_ids, position_ids_to_skids = prepare_skids(skids, service, positions,
-                                                          position_ids, position_ids_to_skids)
-    positions = service.transform_positions(positions)
+    if skids is not None:
+        positions, position_ids, position_ids_to_skids = prepare_skids(skids, repository.service, positions,
+                                                            position_ids, position_ids_to_skids)
+    if repository is not None:
+        positions = repository.transform_positions(positions)
     nt_probabilities = predict_neurotransmitters_from_positions(positions, dataset, model, batch_size)
 
     return nt_probabilities, positions, position_ids, position_ids_to_skids
@@ -124,19 +130,17 @@ def log_stats(n_positions, total_time, t_predict):
     log.info(f"Time per position: {total_time/n_positions}")
     log.info(f"Predict: {t_predict} ({p_predict}%)")
 
-def check_arguments(dataset, service, skids, positions, position_ids):
+def check_arguments(dataset, repository, skids, positions, position_ids):
     log.info("Check arguments...")
 
     if skids is None and positions is None:
         raise ValueError("Provide either skids or positions")
-    if service is None and not skids is None:
-        raise ValueError("Provide service if querying for skids")
-    if not dataset in list(known_datasets.keys()):
+    if repository is None and not skids is None:
+        raise ValueError("Provide repository if querying for skids")
+    if dataset is not None and not dataset in list(known_datasets.keys()):
         raise ValueError(f"Dataset {dataset} not known")
-    if not service in list(known_services.keys()):
-        raise ValueError(f"Service {service} not known")
-    if not f"{dataset}_MODEL" in list(known_models.keys()):
-        raise ValueError(f"Model f{dataset}_MODEL not known")
+    if repository is not None and not repository in list(KNOWN_REPOSITORIES.keys()):
+        raise ValueError(f"Repository {repository} not known")
 
 def prepare_positions(positions, position_ids):
     log.info("Prepare positions...")

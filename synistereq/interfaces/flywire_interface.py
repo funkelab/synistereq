@@ -1,20 +1,21 @@
 from .service_interface import ServiceInterface
-from .catmaid_interface import Catmaid
-from synistereq.datasets import Fafb
 import requests
 import numpy as np
 import json
 
 class Flywire(ServiceInterface):
-    def __init__(self, credentials=None):
-        dataset = Fafb()
+    def __init__(
+        self,
+        dataset,
+        api_url,
+        api_dataset,
+        credentials=None,
+    ):
+
         name = "FLYWIRE"
         super().__init__(dataset, name, credentials)
-        self.request_base_url = "https://spine.janelia.org/app/transform-service"
-
-    def transform_position(self, position):
-        raise NotImplementedError("Transformation not supported for a single point, use transform_positions")
-        return None
+        self.api_url = api_url
+        self.api_dataset = api_dataset
 
     def transform_positions(self, positions, batch_size=1000, scale=4):
         """
@@ -26,8 +27,8 @@ class Flywire(ServiceInterface):
         # This in fact goes from flywire to catmaid
         # Coordinates have to be given in voxel space
         # For catmaid to flywire use flywire_v1_inverse
-        request_url = f"/dataset/flywire_v1/s/{scale}/values_array"
-        request_url = self.request_base_url + request_url
+        request_url = f"/dataset/{self.api_dataset}/s/{scale}/values_array"
+        request_url = self.api_url + request_url
 
         transformed_positions = []
 
@@ -48,9 +49,6 @@ class Flywire(ServiceInterface):
             transformed = [tuple(p*self.dataset.voxel_size) for p in transformed]
             transformed_positions.extend(transformed)
 
-        # Service converts to catmaid space (+1 offset to n5 volume)
-        catmaid = Catmaid()
-        transformed_positions = catmaid.transform_positions(transformed_positions)
         return transformed_positions
 
     def get_pre_synaptic_positions(self, skid):

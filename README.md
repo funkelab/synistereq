@@ -10,12 +10,6 @@ pip install -r requirements.txt
 pip install .
 ```
 
-Replace the two placeholder checkpoints at synistereq/checkpoints with production network checkpoints (See `nils_data/synister_data/production_checkpoints`):
-```
-fafb_checkpoint.placeholder -> fafb_checkpoint
-hemi_checkpoint.placeholder -> hemi_checkpoint
-```
-
 Replace the two placeholder credentials at synistereq (See `nils_data/synister_data/credentials`)
 ```
 neuprint_credentials_placeholder.ini -> neuprint_credentials.ini

@@ -8,13 +8,14 @@ setup(
     author='Funkelab',
     packages=[
         'synistereq',
-        'synistereq.interfaces',
-        'synistereq.datasets',
-        'synistereq.models',
         'synistereq.checkpoints',
+        'synistereq.datasets',
+        'synistereq.interfaces',
         'synistereq.loader',
+        'synistereq.models',
         'synistereq.report',
-        'synistereq.report.latex'
+        'synistereq.report.latex',
+        'synistereq.repositories',
         ],
     scripts=[
         'synistereq/synister_request'

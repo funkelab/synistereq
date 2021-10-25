@@ -60,7 +60,13 @@ def predict_neurotransmitters(dataset=None,
         positions = repository.transform_positions(positions)
     nt_probabilities = predict_neurotransmitters_from_positions(positions, dataset, model, batch_size)
 
-    return nt_probabilities, positions, position_ids, position_ids_to_skids
+    return {
+        'predictions': nt_probabilities,
+        'positions': positions,
+        'position_ids': position_ids,
+        'position_ids_to_skids': position_ids_to_skids,
+        'model': model
+    }
 
 def predict_neurotransmitters_from_positions(positions,
                                              dataset,

@@ -6,6 +6,7 @@ tqdm
 argparse
 pandas
 neuprint-python
+gitpython
 -e git+https://github.com/funkelab/funlib.learn.torch.git@master#egg=funlib.learn.torch
 -e git+https://github.com/funkelab/synister.git@master#egg=synister
 -e git+https://github.com/funkelab/daisy.git@0.3-dev#egg=daisy

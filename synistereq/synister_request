@@ -11,6 +11,9 @@ from synistereq.utils import \
     log_config
 from synistereq.report import generate_report
 import argparse
+import getpass
+import git
+import os
 
 parser = argparse.ArgumentParser()
 
@@ -95,13 +98,25 @@ if __name__ == "__main__":
         position_ids,
         position_ids_to_skids,
         args.batch_size)
-    nt_probabilities, positions, position_ids, position_ids_to_skids = results
     predictions = format_predictions(
-        nt_probabilities,
-        positions,
-        position_ids,
-        position_ids_to_skids)
+        results['predictions'],
+        results['positions'],
+        results['position_ids'],
+        results['position_ids_to_skids'])
 
     write_predictions(predictions, args.out)
+
     if not args.skip_report:
-        generate_report(args.out, args.report)
+
+        this_dir = os.path.dirname(os.path.abspath(__file__))
+        git_repo = git.Repo(this_dir, search_parent_directories=True)
+        git_sha = git_repo.head.object.hexsha
+
+        meta_data = {
+            'repository': args.repository,
+            'checkpoint': results['model'].get_checkpoint_path(),
+            'user': getpass.getuser(),
+            'version': git_sha
+        }
+
+        generate_report(args.out, args.report, meta_data)

@@ -8,7 +8,6 @@ setup(
     author='Funkelab',
     packages=[
         'synistereq',
-        'synistereq.checkpoints',
         'synistereq.datasets',
         'synistereq.interfaces',
         'synistereq.loader',

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import synistereq.datasets
 import synistereq.repositories
 import synistereq.predict_neurotransmitters
 from synistereq.predict_neurotransmitters import predict_neurotransmitters
@@ -36,7 +37,7 @@ group.add_argument(
     default=None)
 group.add_argument(
     "--dataset",
-    help=', '.join(synistereq.predict_neurotransmitters.known_datasets.keys()),
+    help=', '.join(synistereq.datasets.KNOWN_DATASETS.keys()),
     type=str,
     default=None)
 parser.add_argument(

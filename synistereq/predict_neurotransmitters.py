@@ -2,8 +2,8 @@ import numpy as np
 import torch
 from tqdm import tqdm
 
-from synistereq.datasets import Fafb, Hemi, MaleVnc
-from synistereq.models import FafbModel, HemiModel, MaleVncModel
+from synistereq.datasets import KNOWN_DATASETS
+from synistereq.models import KNOWN_MODELS
 from synistereq.loader import get_data_loader
 from synistereq.repositories import KNOWN_REPOSITORIES
 
@@ -15,8 +15,6 @@ log = logging.getLogger(__name__)
 torch.backends.cudnn.enabled = True
 torch.backends.cudnn.benchmark = True
 
-known_datasets = {"FAFB": Fafb, "HEMI": Hemi, "MALE_VNC": MaleVnc}
-known_models = {"FAFB_MODEL": FafbModel, "HEMI_MODEL": HemiModel, "MALE_VNC_MODEL": MaleVncModel}
 
 def predict_neurotransmitters(dataset=None,
                               neither=False,
@@ -46,9 +44,9 @@ def predict_neurotransmitters(dataset=None,
     if dataset is None:
         dataset = repository.dataset
     else:
-        dataset = known_datasets[dataset]()
+        dataset = KNOWN_DATASETS[dataset]()
 
-    model = known_models[f"{dataset.name.upper()}_MODEL"]()
+    model = KNOWN_MODELS[dataset.name.upper()]()
     if(neither):
         model.neurotransmitter_list.append("neither")
 
@@ -141,7 +139,7 @@ def check_arguments(dataset, repository, skids, positions, position_ids):
         raise ValueError("Provide either skids or positions")
     if repository is None and not skids is None:
         raise ValueError("Provide repository if querying for skids")
-    if dataset is not None and not dataset in list(known_datasets.keys()):
+    if dataset is not None and not dataset in list(KNOWN_DATASETS.keys()):
         raise ValueError(f"Dataset {dataset} not known")
     if repository is not None and not repository in list(KNOWN_REPOSITORIES.keys()):
         raise ValueError(f"Repository {repository} not known")

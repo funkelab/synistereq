@@ -31,28 +31,8 @@ class PositionDataset(Dataset):
                  dataset,
                  size):
 
-        self.container = dataset.container
         self.dataset = dataset
-        self.dset = dataset.dataset
-        self.data = daisy.open_ds(self.container,
-                                  self.dset)
-
-        # Correct for datasets where the container does not have the voxel size
-        if self.data.voxel_size != tuple(self.dataset.voxel_size):
-            log.warn(
-                "Container has different voxel size than dataset: "\
-                f"{self.data.voxel_size} != {self.dataset.voxel_size}")
-            orig_shape = self.data.roi.get_shape()
-            self.data = daisy.Array(
-                self.data.data,
-                daisy.Roi(
-                    self.data.roi.get_offset(),
-                    self.dataset.voxel_size*self.data.data.shape[-len(self.dataset.voxel_size):]),
-                self.dataset.voxel_size,
-                chunk_shape=self.data.chunk_shape)
-            log.warn(
-                "Reloaded container data with dataset voxel size, changing shape: "\
-                f"{orig_shape} => {self.data.roi.get_shape()}")
+        self.data = dataset.open_daisy()
 
         self.voxel_size = daisy.Coordinate(dataset.voxel_size)
         self.size = daisy.Coordinate(size)

@@ -3,6 +3,10 @@ import daisy
 import os
 import numpy as np
 
+import logging
+
+log = logging.getLogger(__name__)
+
 class Dataset(ABC):
     def __init__(self, name, container, dataset, voxel_size):
         if not os.path.exists(container):
@@ -15,8 +19,33 @@ class Dataset(ABC):
         self.voxel_size = voxel_size
         super().__init__()
 
-    def get_crops(self, 
-                  center_positions, 
+    def open_daisy(self):
+        """
+        Open this dataset as a daisy array.
+        """
+        data = daisy.open_ds(self.container, self.dataset)
+
+        # Correct for datasets where the container does not have the voxel size
+        if data.voxel_size != tuple(self.voxel_size):
+            log.warn(
+                "Container has different voxel size than dataset: "\
+                f"{data.voxel_size} != {self.voxel_size}")
+            orig_shape = data.roi.get_shape()
+            data = daisy.Array(
+                data.data,
+                daisy.Roi(
+                    data.roi.get_offset(),
+                    self.voxel_size*data.data.shape[-len(self.voxel_size):]),
+                self.voxel_size,
+                chunk_shape=data.chunk_shape)
+            log.warn(
+                "Reloaded container data with dataset voxel size, changing shape: "\
+                f"{orig_shape} => {data.roi.get_shape()}")
+
+        return data
+
+    def get_crops(self,
+                  center_positions,
                   size):
         """
         Args:

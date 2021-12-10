@@ -12,6 +12,24 @@ class ServiceInterface(Transformer):
         self.name = name
         super().__init__()
 
+    def get_state_metadata(self):
+        """
+        Returns any metadata about the state or version of the service's data.
+        """
+        raise NotImplementedError()
+
+    def pre_synapse_batches(self, batch_size=None, resume_offset=None):
+        """
+        Yields in batches all presynaptic positions from the service.
+
+            Args:
+                batch_size: approximate size of batches to yield
+
+            Returns:
+
+        """
+        raise NotImplementedError()
+
     @abstractmethod
     def get_pre_synaptic_positions(self, skid):
         """

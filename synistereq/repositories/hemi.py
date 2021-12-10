@@ -8,8 +8,16 @@ from .repository import Repository
 class HemiNeuprint(Repository):
     def __init__(self):
         dataset = Hemi()
+        service = Neuprint(
+            dataset=dataset,
+            server="neuprint.janelia.org",
+            neuprint_dataset="hemibrain:v1.2.1",
+        )
         self.x_shape = daisy.open_ds(dataset.container, dataset.dataset).shape[0]
-        super().__init__(dataset=dataset, service=Neuprint(dataset=dataset))
+        super().__init__(
+            dataset=dataset,
+            service=service,
+        )
 
     def transform_positions(self, positions):
         transformed_positions = np.asarray(positions)

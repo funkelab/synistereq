@@ -8,7 +8,7 @@ class MaleVncModel(Model):
         dataset = "MALE_VNC"
         input_shape = (80, 80, 80)
         checkpoint = None
-        neurotransmitter_list = ["gaba", "acetylcholine", "glutamate"]
+        neurotransmitter_list = ["gaba", "acetylcholine", "glutamate", "neither"]
         super().__init__(dataset, checkpoint, input_shape, neurotransmitter_list)
         self.checkpoint = self.get_checkpoint_path()
 
